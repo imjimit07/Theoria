@@ -1,0 +1,4 @@
+Module Test
+
+Frobulate foo:
+    return 1

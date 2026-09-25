@@ -1,0 +1,4 @@
+Module Test
+
+Function bad() -> Bool:
+    return 0

@@ -1,0 +1,19 @@
+[package]
+name         = "theoria_syntax"
+description  = "Concrete syntax tree, tokens, and spans for Project Theoria."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+# ZERO dependencies.
+
+[features]
+default = ["std"]
+std     = []
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

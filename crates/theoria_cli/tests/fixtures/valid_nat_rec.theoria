@@ -1,0 +1,6 @@
+Module Demo
+
+Import Standard.Prelude
+
+Function plus(m : Nat, n : Nat) -> Nat:
+    return Nat.rec(λ (_ : Nat). Nat, n, λ (k : Nat). λ (ih : Nat). Nat.succ(ih), m)

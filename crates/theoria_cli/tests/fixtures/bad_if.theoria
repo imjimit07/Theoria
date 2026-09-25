@@ -1,0 +1,6 @@
+Module Demo.BadIf
+
+Import Standard.Prelude
+
+Function bad() -> Nat:
+    return if 1 then 2 else 3

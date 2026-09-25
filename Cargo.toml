@@ -1,0 +1,13 @@
+[workspace]
+resolver = "2"
+members = ["crates/theoria_kernel", "crates/theoria_cli", "crates/theoria_syntax", "crates/theoria_parser", "crates/theoria_elaborator", "crates/theoria_units"]
+
+[workspace.package]
+version      = "0.1.0"
+edition      = "2024"
+rust-version = "1.85"
+license      = "MIT OR Apache-2.0"
+repository   = "https://github.com/theoria-lang/theoria"
+
+[workspace.dependencies]
+# Intentionally empty — the kernel forbids external dependencies.

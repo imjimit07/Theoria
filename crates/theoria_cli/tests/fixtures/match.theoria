@@ -1,0 +1,28 @@
+Module Demo.Match
+
+Import Standard.Prelude
+
+Function is_zero(n : Nat) -> Bool:
+    return match n:
+        case Nat.zero => Bool.true
+        case Nat.succ _ => Bool.false
+
+Function pred(n : Nat) -> Nat:
+    return match n:
+        case Nat.zero => Nat.zero
+        case Nat.succ k => k
+
+Function neg(b : Bool) -> Bool:
+    return match b:
+        case Bool.true => Bool.false
+        case Bool.false => Bool.true
+
+Function min(a : Nat, b : Nat) -> Nat:
+    return match Nat.ble(a, b):
+        case Bool.true => a
+        case Bool.false => b
+
+Function pred_or_zero(n : Nat) -> Nat:
+    return match n:
+        case Nat.zero => Nat.zero
+        case _ => n

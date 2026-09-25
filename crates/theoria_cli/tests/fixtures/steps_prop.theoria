@@ -1,0 +1,18 @@
+Module Demo.StepsProp
+
+Import Standard.Prelude
+
+Theorem assume_prop:
+    Assume:
+        h : Eq(Nat, 0, 0)
+    Show: Eq(Nat, 0, 0)
+    Proof:
+        1. From h
+    QED
+
+Theorem let_inferred:
+    Show: Eq(Nat, 0, 0)
+    Proof:
+        1. Let n = 0
+        2. Exact Eq.refl(Nat, n)
+    QED

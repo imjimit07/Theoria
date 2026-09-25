@@ -1,0 +1,10 @@
+Module Demo.Recursive
+
+Import Standard.Prelude
+
+Structure Wrapper:
+    value : Nat
+    inner : Wrapper
+
+Function peek_value(w : Wrapper) -> Nat:
+    return Wrapper.value(w)

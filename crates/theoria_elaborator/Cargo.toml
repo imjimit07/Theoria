@@ -1,0 +1,24 @@
+[package]
+name         = "theoria_elaborator"
+description  = "Surface-to-kernel elaboration for Project Theoria."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+theoria_kernel = { path = "../theoria_kernel" }
+theoria_syntax = { path = "../theoria_syntax" }
+theoria_units  = { path = "../theoria_units" }
+
+[dev-dependencies]
+theoria_parser = { path = "../theoria_parser" }
+
+[features]
+default = ["std"]
+std     = []
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

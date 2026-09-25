@@ -1,0 +1,6 @@
+Module Demo.IfInArg
+
+Import Standard.Prelude
+
+Function bad(a : Nat, b : Nat) -> Nat:
+    return Nat.succ(if a <= b then a else b)

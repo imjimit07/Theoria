@@ -1,0 +1,16 @@
+Module Demo.Structures
+
+Import Standard.Prelude
+
+Structure Point2D:
+    x : Nat
+    y : Nat
+
+Structure Box(A : Type):
+    contents : A
+
+Function origin() -> Point2D:
+    return Point2D.mk(0, 0)
+
+Function unwrap_box(n : Nat) -> Nat:
+    return Box.contents(Nat, Box.mk(Nat, n))

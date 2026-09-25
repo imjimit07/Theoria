@@ -1,0 +1,12 @@
+Module Demo.Comparisons
+
+Import Standard.Prelude
+
+Function is_zero(n : Nat) -> Bool:
+    return n == 0
+
+Function less_than(a : Nat, b : Nat) -> Bool:
+    return a < b
+
+Function if_nat(b : Bool, t : Nat, f : Nat) -> Nat:
+    return Bool.rec(λ (_ : Bool). Nat, t, f, b)

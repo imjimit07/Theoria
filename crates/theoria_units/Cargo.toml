@@ -1,0 +1,20 @@
+[package]
+name         = "theoria_units"
+description  = "Elaboration-time dimensional analysis for Project Theoria."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+theoria_kernel = { path = "../theoria_kernel" }
+theoria_syntax = { path = "../theoria_syntax" }
+
+[features]
+default = ["std"]
+std = []
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

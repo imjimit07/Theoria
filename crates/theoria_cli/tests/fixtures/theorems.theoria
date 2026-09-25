@@ -1,0 +1,31 @@
+Module Demo.Theorems
+
+Import Standard.Prelude
+
+Theorem zero_eq_zero:
+    Show: Eq(Nat, 0, 0)
+    Proof: Eq.refl(Nat, 0)
+    QED
+
+Theorem refl_nat:
+    Given:
+        n : Nat
+    Show: Eq(Nat, n, n)
+    Proof: Eq.refl(Nat, n)
+    QED
+
+Theorem h_used:
+    Assume:
+        h : Eq(Nat, 0, 0)
+    Show: Eq(Nat, 0, 0)
+    Proof: h
+    QED
+
+Theorem steps_demo:
+    Given:
+        n : Nat
+    Show: Eq(Nat, n, n)
+    Proof:
+        1. Have h : Eq(Nat, n, n) = Eq.refl(Nat, n)
+        2. Exact h
+    QED

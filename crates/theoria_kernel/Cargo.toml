@@ -1,0 +1,22 @@
+[package]
+name         = "theoria_kernel"
+description  = "Trusted logical micro-kernel for Project Theoria (CIC verifier)."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+# ZERO dependencies. Any PR adding a dependency to this crate is rejected by CI.
+
+[features]
+default = ["std"]
+std     = []
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }

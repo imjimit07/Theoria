@@ -1,0 +1,6 @@
+Module Demo.Shadow
+
+Import Standard.Prelude
+
+Function bad(Nat : Nat) -> Nat:
+    return Nat.zero

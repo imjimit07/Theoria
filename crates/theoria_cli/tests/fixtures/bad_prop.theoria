@@ -1,0 +1,8 @@
+Module Demo.BadProp
+
+Import Standard.Prelude
+
+Theorem not_a_prop:
+    Show: Nat
+    Proof: 0
+    QED

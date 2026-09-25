@@ -1,0 +1,12 @@
+Module Demo.Arithmetic
+
+Import Standard.Prelude
+
+Function double(n : Nat) -> Nat:
+    return n + n
+
+Function square(n : Nat) -> Nat:
+    return n * n
+
+Function quad(n : Nat) -> Nat:
+    return (n + n) * (n + n)

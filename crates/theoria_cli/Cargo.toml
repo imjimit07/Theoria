@@ -1,0 +1,20 @@
+[package]
+name         = "theoria_cli"
+description  = "Command-line interface for Project Theoria."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[[bin]]
+name = "theoria"
+path = "src/main.rs"
+
+[dependencies]
+theoria_elaborator = { path = "../theoria_elaborator" }
+theoria_kernel = { path = "../theoria_kernel" }
+theoria_parser = { path = "../theoria_parser" }
+
+[lints.rust]
+unsafe_code = "forbid"

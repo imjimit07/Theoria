@@ -1,0 +1,12 @@
+Module Test
+
+Import Standard.Prelude
+
+Function zero() -> Nat:
+    return 0
+
+Function one() -> Nat:
+    return 1
+
+Function id(n: Nat) -> Nat:
+    return n

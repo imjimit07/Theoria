@@ -1,0 +1,14 @@
+Module Demo.Control
+
+Import Standard.Prelude
+
+Function min(a : Nat, b : Nat) -> Nat:
+    return if a <= b then a else b
+
+Function abs_diff(a : Nat, b : Nat) -> Nat:
+    let la : Bool = a <= b
+    return if la then b - a else a - b
+
+Function double_square(n : Nat) -> Nat:
+    let m : Nat = n + 1
+    return m * m

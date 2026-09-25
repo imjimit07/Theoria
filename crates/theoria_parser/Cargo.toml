@@ -1,0 +1,15 @@
+[package]
+name         = "theoria_parser"
+description  = "Hand-rolled indentation-aware parser for .theoria files."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+theoria_syntax = { path = "../theoria_syntax" }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
