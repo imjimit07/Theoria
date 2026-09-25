@@ -1,0 +1,19 @@
+[package]
+name         = "theoria_diagnostics"
+description  = "Source-span diagnostics for Project Theoria."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+theoria_syntax = { path = "../theoria_syntax" }
+
+[features]
+default = ["std"]
+std     = ["theoria_syntax/std"]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

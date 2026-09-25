@@ -17,6 +17,7 @@ use std::fs;
 use std::io::{self, Write};
 use std::process::ExitCode;
 
+use theoria_diagnostics::{Diagnostic, Label, Renderer, SourceFile};
 use theoria_kernel::env::ConstantInfo;
 use theoria_kernel::prelude::build_prelude;
 
@@ -33,6 +34,7 @@ fn main() -> ExitCode {
         }
         Some("prelude") => cmd_prelude(),
         Some("check") => cmd_check(args.get(1).map(String::as_str)),
+        Some("run") => cmd_run(args.get(1).map(String::as_str)),
         Some(other) => {
             eprintln!("theoria: unknown command: {other}");
             eprintln!("Try `theoria help`.");
@@ -48,10 +50,11 @@ fn print_help() {
          USAGE:\n\
          \x20   theoria <COMMAND> [ARGS]\n\
          \n\
-         COMMANDS:\n\
+          COMMANDS:\n\
          \x20   version         Print the version.\n\
          \x20   prelude         Describe the kernel's built-in prelude.\n\
          \x20   check <FILE>    Read a .theoria file and report status.\n\
+         \x20   run <FILE>      Elaborate and execute a .theoria file.\n\
          \x20   help            Print this help.\n\
          \n\
          The parser, elaborator, and REPL arrive in Phase 2.",
@@ -144,6 +147,88 @@ fn cmd_check(path: Option<&str>) -> ExitCode {
     }
 }
 
+fn cmd_run(path: Option<&str>) -> ExitCode {
+    let Some(path) = path else {
+        eprintln!("theoria: `run` requires a file argument");
+        return ExitCode::from(2);
+    };
+    let contents = match fs::read_to_string(path) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("theoria: cannot read {path}: {e}");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let module = match theoria_parser::parse_module(&contents) {
+        Ok(m) => m,
+        Err(errors) => {
+            render_syntax_errors(path, &contents, &errors);
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let mut elaborated = match theoria_elaborator::elaborate_module(&module) {
+        Ok(e) => e,
+        Err(errors) => {
+            render_elaborate_errors(path, &contents, &errors);
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // Build the VM environment. Errors here are kernel errors, not
+    // surface errors; report them plainly.
+    let vm_env = match theoria_vm::VmEnv::build(&elaborated.env, &mut elaborated.names) {
+        Ok(e) => e,
+        Err(e) => {
+            eprintln!("theoria: cannot construct VM environment: {e}");
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // Execute the last zero-arity function declared in the module, if
+    // any. If the module has no zero-arity function, report that the
+    // module has nothing to run.
+    let entry = elaborated.functions.iter().rev().find(|f| f.arity == 0);
+    let Some(entry) = entry else {
+        eprintln!(
+            "theoria: no zero-arity function to run in `{path}`; declare one with `Function main() -> …`"
+        );
+        return ExitCode::FAILURE;
+    };
+
+    let body = match vm_env.erased_body(entry.kernel_name) {
+        Some(b) => b,
+        None => {
+            eprintln!(
+                "theoria: function `{}` has no erased body (not a definition?)",
+                entry.source_name,
+            );
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let program = match theoria_vm::Compiler::new(&vm_env).compile(&body) {
+        Ok(p) => std::rc::Rc::new(p),
+        Err(e) => {
+            eprintln!("theoria: cannot compile `{}`: {e}", entry.source_name);
+            return ExitCode::FAILURE;
+        }
+    };
+
+    let vm = theoria_vm::Vm::new(&vm_env);
+    match vm.run(&program) {
+        Ok(v) => {
+            println!("theoria: {} → {:?}", entry.source_name, v);
+            ExitCode::SUCCESS
+        }
+        Err(e) => {
+            eprintln!("theoria: runtime error in `{}`: {e}", entry.source_name);
+            ExitCode::FAILURE
+        }
+    }
+}
+
 /// Print a short summary of a successfully parsed and elaborated module.
 fn print_parse_summary(
     path: &str,
@@ -182,51 +267,30 @@ fn print_parse_summary(
     }
 }
 
-/// Render syntax errors rustc-style: one `path:line:col: error:` line
-/// plus a caret snippet per error.
 fn render_syntax_errors(path: &str, contents: &str, errors: &[theoria_parser::SyntaxError]) {
-    let map = theoria_parser::SourceMap::new(contents.to_string());
+    let source = SourceFile::new(path, contents);
+    let sources = [source];
+    let renderer = Renderer::new(&sources);
+    let mut out = String::new();
     for e in errors {
-        render_diagnostic(path, &map, contents, e.span.start, e.span.end, &e.message);
+        let diag = Diagnostic::error(e.message.clone()).with_label(Label::primary(0, e.span));
+        let _ = renderer.render(&diag, &mut out);
     }
+    eprint!("{out}");
 }
 
-/// Render elaboration errors in the same shape as syntax errors.
 fn render_elaborate_errors(
     path: &str,
     contents: &str,
     errors: &[theoria_elaborator::ElaborateError],
 ) {
-    let map = theoria_parser::SourceMap::new(contents.to_string());
+    let source = SourceFile::new(path, contents);
+    let sources = [source];
+    let renderer = Renderer::new(&sources);
+    let mut out = String::new();
     for e in errors {
-        render_diagnostic(path, &map, contents, e.span.start, e.span.end, &e.message);
+        let diag = Diagnostic::error(e.message.clone()).with_label(Label::primary(0, e.span));
+        let _ = renderer.render(&diag, &mut out);
     }
-}
-
-/// One `path:line:col: error:` line plus a caret snippet.
-fn render_diagnostic(
-    path: &str,
-    map: &theoria_parser::SourceMap,
-    contents: &str,
-    start: u32,
-    end: u32,
-    message: &str,
-) {
-    let lc = map.line_col(start);
-    eprintln!("{path}:{}:{}: error: {message}", lc.line, lc.col);
-    let line_text = map.line_text(lc.line);
-    let line_chars: Vec<char> = line_text.chars().collect();
-    let col0 = (lc.col as usize).saturating_sub(1).min(line_chars.len());
-    let span_chars = contents
-        .get(start as usize..end as usize)
-        .map_or(0, |s| s.chars().take_while(|&c| c != '\n').count())
-        .max(1);
-    let width = span_chars.min(line_chars.len().saturating_sub(col0).max(1));
-    eprintln!("{} | {}", lc.line, line_text);
-    eprintln!(
-        "{}| {}{}",
-        " ".repeat(lc.line.to_string().len()),
-        " ".repeat(col0),
-        "^".repeat(width)
-    );
+    eprint!("{out}");
 }

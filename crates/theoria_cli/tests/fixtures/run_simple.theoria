@@ -1,0 +1,6 @@
+Module Demo.Run
+
+Import Standard.Prelude
+
+Function main() -> Nat:
+    return 0

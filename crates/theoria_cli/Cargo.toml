@@ -12,9 +12,11 @@ name = "theoria"
 path = "src/main.rs"
 
 [dependencies]
+theoria_diagnostics = { path = "../theoria_diagnostics" }
 theoria_elaborator = { path = "../theoria_elaborator" }
 theoria_kernel = { path = "../theoria_kernel" }
 theoria_parser = { path = "../theoria_parser" }
+theoria_vm = { path = "../theoria_vm" }
 
 [lints.rust]
 unsafe_code = "forbid"

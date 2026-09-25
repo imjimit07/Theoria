@@ -347,3 +347,77 @@ fn check_steps_prop_fixture_elaborates() {
     assert!(stdout.contains("assume_prop"), "stdout was:\n{stdout}");
     assert!(stdout.contains("let_inferred"), "stdout was:\n{stdout}");
 }
+
+#[test]
+fn run_simple_fixture_prints_zero() {
+    let out = theoria()
+        .arg("run")
+        .arg("tests/fixtures/run_simple.theoria")
+        .output()
+        .expect("failed to run theoria");
+    assert!(
+        out.status.success(),
+        "stdout: {}\nstderr: {}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    assert!(
+        stdout.contains("main") && stdout.contains('0'),
+        "stdout was:\n{stdout}"
+    );
+}
+
+#[test]
+fn run_without_entry_reports_helpful_error() {
+    // The `valid.theoria` fixture has three functions, the last
+    // zero-arity one is `one` which returns `1`.
+    let out = theoria()
+        .arg("run")
+        .arg("tests/fixtures/valid.theoria")
+        .output()
+        .expect("failed to run theoria");
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(out.status.success(), "stdout: {stdout}\nstderr: {stderr}");
+    assert!(
+        stdout.contains("one") && stdout.contains('1'),
+        "stdout was:\n{stdout}"
+    );
+}
+
+#[test]
+fn syntax_error_renders_with_note_line() {
+    let out = theoria()
+        .arg("check")
+        .arg("tests/fixtures/invalid_indent.theoria")
+        .output()
+        .expect("failed to run theoria");
+    assert_eq!(out.status.code(), Some(1));
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(stderr.contains("error: "), "stderr was:\n{stderr}");
+    assert!(
+        stderr.contains("^"),
+        "caret line missing, stderr was:\n{stderr}"
+    );
+}
+
+#[test]
+fn run_plus_fixture_prints_eight() {
+    let out = theoria()
+        .arg("run")
+        .arg("tests/fixtures/run_plus.theoria")
+        .output()
+        .expect("failed to run theoria");
+    assert!(
+        out.status.success(),
+        "stdout: {}\nstderr: {}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    assert!(
+        stdout.contains("main") && stdout.contains('8'),
+        "stdout was:\n{stdout}"
+    );
+}

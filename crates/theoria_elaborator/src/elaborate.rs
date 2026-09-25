@@ -592,15 +592,12 @@ impl Elaborator {
     /// that proof bodies are never unfolded during ordinary type
     /// checking.
     ///
-    /// ## Known limitation
-    ///
-    /// The `Show:` goal is not checked to be a proposition (`Sort 0`).
-    /// A `Theorem` whose goal is a `Nat` and whose proof is a `Nat`
-    /// will register as a definition-shaped theorem; the kernel accepts
-    /// it because `check_declaration` treats theorems identically to
-    /// definitions. Enforcing `Prop`-ness requires the elaborator to
-    /// run the kernel's `infer` on `Show` with the `Given`/`Assume`
-    /// binders in scope, which is a small follow-up.
+    /// The `Show:` goal is verified to be a proposition (`Sort 0`) by
+    /// `check_show_is_prop`; a goal that lives above `Prop`
+    /// (e.g. `Nat`, `Bool`, `Nat -> Nat`) is rejected before the
+    /// proof term is elaborated. See delivery 17 for the shape of the
+    /// check and delivery 20 for the parallel check on `Assume:`
+    /// hypotheses and `Have:` lemmas.
     fn elaborate_theorem(
         &mut self,
         t: &theoria_syntax::TheoremDef,
@@ -712,31 +709,6 @@ impl Elaborator {
         })
     }
 
-    /// Elaborate a numbered proof-step block into a kernel `Let`-chain
-    /// ending in the `Exact` term.
-    ///
-    /// Steps are processed in order. Each `Let` and `Have` extends the
-    /// local scope with a new binding; `Exact` provides the final proof
-    /// term and must be the last step. The result is a nested
-    /// `Expr::Let` sequence:
-    ///
-    /// ```text
-    /// let n₁ : T₁ = v₁ in
-    /// let n₂ : T₂ = v₂ in
-    /// ... in
-    /// exact_term
-    /// ```
-    ///
-    /// # Errors
-    ///
-    /// * [`ElaborateErrorKind::InvalidProofStep`] if `Exact` is missing,
-    ///   if any step follows `Exact`, or if a step's binding name is
-    ///   already in scope.
-    /// * [`ElaborateErrorKind::Kernel`] if elaboration of any step's
-    ///   type or term fails.
-    /// * Propagates errors from `elaborate_expr` and
-    ///   `elaborate_expr_checked`.
-    ///
     /// Elaborate a numbered proof-step block into a kernel `Let`-chain
     ///   ending in the final proof term.
     ///

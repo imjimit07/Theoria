@@ -1,0 +1,42 @@
+[package]
+name         = "theoria_vm"
+description  = "Bytecode VM and Cranelift JIT for erased Theoria terms."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+theoria_kernel = { path = "../theoria_kernel" }
+
+# Optional native backend. Feature-gated so the VM crate stays
+# dependency-free for WASM targets and for `no_std` environments.
+cranelift-codegen   = { version = "0.115", optional = true }
+cranelift-frontend  = { version = "0.115", optional = true }
+cranelift-jit       = { version = "0.115", optional = true }
+cranelift-module    = { version = "0.115", optional = true }
+cranelift-native    = { version = "0.115", optional = true }
+target-lexicon      = { version = "0.12",  optional = true }
+
+[features]
+default = ["std"]
+std     = ["theoria_kernel/std"]
+# Native Cranelift JIT backend. Enabling pulls in a substantial C
+# dependency tree; leave off for WASM and for `no_std` builds.
+jit     = [
+    "dep:cranelift-codegen",
+    "dep:cranelift-frontend",
+    "dep:cranelift-jit",
+    "dep:cranelift-module",
+    "dep:cranelift-native",
+    "dep:target-lexicon",
+]
+
+[dev-dependencies]
+theoria_parser = { path = "../theoria_parser" }
+theoria_elaborator = { path = "../theoria_elaborator" }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

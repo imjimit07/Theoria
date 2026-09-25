@@ -150,7 +150,7 @@ pub enum ElaborateErrorKind {
     /// A local proof binding (an `Assume:` hypothesis or a `Have:` step
     /// lemma) is not a proposition.
     ///
-    /// Symmetric to [`TheoremGoalNotAProposition`]: a proof obligation
+    /// Symmetric to `TheoremGoalNotAProposition`: a proof obligation
     /// must live in `Prop`.
     LocalBindingNotAProposition {
         /// The binding's name.

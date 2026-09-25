@@ -1,0 +1,6 @@
+Module Demo.RunPlus
+
+Import Standard.Prelude
+
+Function main() -> Nat:
+    return 8
