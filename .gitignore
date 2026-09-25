@@ -1,0 +1,34 @@
+# See https://github.com/github/gitignore/blob/master/Rust.gitignore
+# Files to exclude from tracking
+
+# Target directory (build artifacts)
+target/
+
+# Common Python/other file artifacts
+*.pyc
+__pycache__/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation artifacts (if any)
+*.aux
+*.log
+*.out
+
+# Binary / executable files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Rust specific
+*.rs.bk
+
+# Operating system specific
+.DS_Store
+.SOS_dsym/
