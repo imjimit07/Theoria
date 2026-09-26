@@ -32,3 +32,6 @@ __pycache__/
 # Operating system specific
 .DS_Store
 .SOS_dsym/
+
+# Local codebase dump (never commit)
+codebase.txt
