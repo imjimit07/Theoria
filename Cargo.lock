@@ -420,6 +420,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "theoria_vm_jit"
+version = "0.1.0"
+dependencies = [
+ "cranelift-codegen",
+ "cranelift-frontend",
+ "cranelift-jit",
+ "cranelift-module",
+ "cranelift-native",
+ "target-lexicon",
+ "theoria_kernel",
+ "theoria_vm",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"

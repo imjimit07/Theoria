@@ -12,7 +12,7 @@ theoria_kernel = { path = "../theoria_kernel" }
 
 # Optional native backend. Feature-gated so the VM crate stays
 # dependency-free for WASM targets and for `no_std` environments.
-cranelift-codegen   = { version = "0.115", optional = true }
+cranelift-codegen   = { version = "0.115", optional = true, features = ["std"] }
 cranelift-frontend  = { version = "0.115", optional = true }
 cranelift-jit       = { version = "0.115", optional = true }
 cranelift-module    = { version = "0.115", optional = true }

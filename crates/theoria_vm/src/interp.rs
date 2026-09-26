@@ -49,6 +49,25 @@ impl<'a> Vm<'a> {
         self.run_with_depth(program, entry, locals, 0)
     }
 
+    /// Execute a program starting at an instruction index with the given
+    /// locals.
+    ///
+    /// Exposed for the JIT bridge, which jumps into individual rule
+    /// bodies; the CLI uses [`Vm::run`] instead.
+    ///
+    /// # Errors
+    ///
+    /// Returns any [`VmError`] produced during execution, as [`Vm::run`]
+    /// does.
+    pub fn run_entry(
+        &self,
+        program: &Rc<Program>,
+        entry: u32,
+        locals: Vec<Value>,
+    ) -> Result<Value, VmError> {
+        self.run_with_depth(program, entry, locals, 0)
+    }
+
     fn run_with_depth(
         &self,
         program: &Rc<Program>,

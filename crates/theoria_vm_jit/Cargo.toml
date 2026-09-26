@@ -1,0 +1,28 @@
+[package]
+name         = "theoria_vm_jit"
+description  = "JIT backend for the Theoria VM (unsafe code isolated here)."
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+
+[dependencies]
+theoria_kernel = { path = "../theoria_kernel" }
+theoria_vm     = { path = "../theoria_vm" }
+
+cranelift-codegen   = "0.115"
+cranelift-frontend  = "0.115"
+cranelift-jit       = "0.115"
+cranelift-module    = "0.115"
+cranelift-native    = "0.115"
+target-lexicon      = "0.12"
+
+[features]
+default = ["std"]
+std     = []
+jit     = []
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"

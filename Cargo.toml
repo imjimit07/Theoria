@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/theoria_kernel", "crates/theoria_cli", "crates/theoria_syntax", "crates/theoria_parser", "crates/theoria_elaborator", "crates/theoria_units", "crates/theoria_vm", "crates/theoria_diagnostics"]
+members = ["crates/theoria_kernel", "crates/theoria_cli", "crates/theoria_syntax", "crates/theoria_parser", "crates/theoria_elaborator", "crates/theoria_units", "crates/theoria_vm", "crates/theoria_vm_jit", "crates/theoria_diagnostics"]
 
 [workspace.package]
 version      = "0.1.0"
